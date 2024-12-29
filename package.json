@@ -10,13 +10,13 @@
     "scripts": {
         "build": "tsc",
         "dev": "tsc --watch",
+        "prepublishOnly": "pnpm build",
         "play": "tsx src/index.ts",
         "start": "node dist/index.js"
     },
     "dependencies": {
         "blessed": "^0.1.81",
         "cac": "^6.7.14",
-        "node-pty": "^1.0.0",
         "picocolors": "^1.1.1"
     },
     "devDependencies": {
