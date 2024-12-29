@@ -1,5 +1,11 @@
 # concurrently-ui
 
+## 1.2.0
+
+### Minor Changes
+
+- 984440c: Scroll to bottom on task change
+
 ## 1.1.0
 
 ### Minor Changes
