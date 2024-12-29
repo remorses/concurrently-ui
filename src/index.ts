@@ -13,18 +13,24 @@ interface Task {
     process?: ReturnType<typeof spawn>
 }
 
+interface LogViewerOptions {
+    commands: string[]
+    killOthers: boolean
+    killOthersOnFail: boolean
+}
+
 class LogViewer extends EventEmitter {
     private screen!: blessed.Widgets.Screen
     private sidebar!: blessed.Widgets.ListElement
     private logBox!: blessed.Widgets.ScrollableBoxElement
     private tasks: Task[]
     private currentTaskIndex: number = 0
-    private killOnFirst: boolean
+    private options: LogViewerOptions
 
-    constructor(commands: string[], killOnFirst: boolean = false) {
+    constructor(options: LogViewerOptions) {
         super()
-        this.killOnFirst = killOnFirst
-        this.tasks = commands.map((command, index) => ({
+        this.options = options
+        this.tasks = options.commands.map((command, index) => ({
             id: `task-${index}`,
             title: command,
             command,
@@ -160,7 +166,10 @@ class LogViewer extends EventEmitter {
                         this.updateLogBox()
                     }
 
-                    if (this.killOnFirst) {
+                    if (
+                        (this.options.killOthers && code === 0) ||
+                        (this.options.killOthersOnFail && code !== 0)
+                    ) {
                         this.killAllTasks()
                     }
                 })
@@ -203,9 +212,13 @@ class LogViewer extends EventEmitter {
 
 const cli = cac('concurrently-ui')
 
-cli.option('-k, --kill', 'Kill all commands when first command exits', {
+cli.option('-k, --kill-others', 'Kill all commands when first command exits', {
     default: false,
-}).help()
+})
+    .option('--kill-others-on-fail', 'Kill all commands if a command fails', {
+        default: false,
+    })
+    .help()
 
 const parsed = cli.parse()
 
@@ -214,4 +227,8 @@ if (parsed.args.length === 0) {
     process.exit(1)
 }
 
-new LogViewer(parsed.args as string[], parsed.options.kill)
+new LogViewer({
+    commands: parsed.args as string[],
+    killOthers: parsed.options.killOthers,
+    killOthersOnFail: parsed.options.killOthersOnFail,
+})
