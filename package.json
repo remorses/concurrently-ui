@@ -1,28 +1,24 @@
 {
-    "name": "tsc-shame",
-    "version": "0.2.14",
-    "description": "Find which node_modules are causing slow tsc type checking",
-    "main": "dist/tsc-shame.js",
-    "types": "dist/tsc-shame.d.ts",
-    "bin": "bin.js",
+    "name": "concurrently-ui",
+    "version": "1.0.0",
+    "description": "Run multiple commands concurrently with a terminal UI",
+    "type": "module",
+    "main": "dist/index.js",
+    "bin": {
+        "concurrently-ui": "./dist/index.js"
+    },
     "scripts": {
         "build": "tsc",
-        "prepublishOnly": "pnpm build",
-        "play": "tsc && node bin.js",
-        "watch": "tsc -w"
+        "dev": "tsc --watch",
+        "start": "node dist/index.js"
     },
-    "files": [
-        "dist",
-        "src",
-        "bin.js",
-        "esm"
-    ],
-    "keywords": [],
-    "author": "Tommaso De Rossi, morse <beats.by.morse@gmail.com>",
-    "license": "MIT",
+    "dependencies": {
+        "blessed": "^0.1.81",
+        "cac": "^6.7.14"
+    },
     "devDependencies": {
-        "@changesets/cli": "^2.27.7",
-        "@types/node": "^20.14.10",
-        "typescript": "^5.5.3"
+        "@types/blessed": "^0.1.25",
+        "@types/node": "^20.11.24",
+        "typescript": "^5.3.3"
     }
 }

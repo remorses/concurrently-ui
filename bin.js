@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('./dist/tsc-shame.js')
+require('./dist/index.js')
