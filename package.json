@@ -1,8 +1,8 @@
 {
     "name": "concurrently-ui",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Run multiple commands concurrently with a terminal UI",
-    "type": "module",
+    "type": "commonjs",
     "main": "dist/index.js",
     "repository": {
         "url": "https://github.com/remorses/concurrently-ui"
