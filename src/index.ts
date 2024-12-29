@@ -29,6 +29,7 @@ class LogViewer extends EventEmitter {
     private currentTaskIndex: number = 0
     private options: LogViewerOptions
     private spinnerIntervals: NodeJS.Timeout[] = []
+    private mouseEnabled: boolean = true
 
     constructor(options: LogViewerOptions) {
         super()
@@ -108,17 +109,32 @@ class LogViewer extends EventEmitter {
             this.handleTaskSelect(this.sidebar, this.sidebar['selected'])
         })
 
-        // Enable mouse wheel scrolling for logBox
-        this.logBox.on('wheeldown', () => {
-            this.screen.program.enableMouse()
-            this.logBox.scroll(1)
+        // Toggle mouse mode with 's' key
+        this.screen.key(['s'], () => {
+            this.mouseEnabled = !this.mouseEnabled
+            if (this.mouseEnabled) {
+                this.screen.program.enableMouse()
+            } else {
+                this.screen.program.disableMouse()
+            }
             this.screen.render()
         })
 
+        // Enable mouse wheel scrolling for logBox
+        this.logBox.on('wheeldown', () => {
+            if (this.mouseEnabled) {
+                this.screen.program.enableMouse()
+                this.logBox.scroll(1)
+                this.screen.render()
+            }
+        })
+
         this.logBox.on('wheelup', () => {
-            this.screen.program.enableMouse()
-            this.logBox.scroll(-1)
-            this.screen.render()
+            if (this.mouseEnabled) {
+                this.screen.program.enableMouse()
+                this.logBox.scroll(-1)
+                this.screen.render()
+            }
         })
 
         // Handle terminal resize

@@ -14,6 +14,9 @@ importers:
       cac:
         specifier: ^6.7.14
         version: 6.7.14
+      node-pty:
+        specifier: ^1.0.0
+        version: 1.0.0
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -279,6 +282,12 @@ packages:
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
+
+  nan@2.22.0:
+    resolution: {integrity: sha512-nbajikzWTMwsW+eSsNm3QwlOs7het9gGJU5dDZzRTQGk03vyBOauxgI4VakDzE0PtsGTmXPsXTbbjVhRwR5mpw==}
+
+  node-pty@1.0.0:
+    resolution: {integrity: sha512-wtBMWWS7dFZm/VgqElrTvtfMq4GzJ6+edFI0Y0zyzygUSZMgZdraDUMUhCIvkjhJjme15qWmbyJbtAx4ot4uZA==}
 
   os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
@@ -760,6 +769,12 @@ snapshots:
       picomatch: 2.3.1
 
   mri@1.2.0: {}
+
+  nan@2.22.0: {}
+
+  node-pty@1.0.0:
+    dependencies:
+      nan: 2.22.0
 
   os-tmpdir@1.0.2: {}
 
