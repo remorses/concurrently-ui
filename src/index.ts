@@ -164,6 +164,7 @@ class LogViewer extends EventEmitter {
     ): void {
         this.currentTaskIndex = index
         this.updateLogBox()
+        this.logBox.setScrollPerc(100) // Scroll to bottom when switching tasks
     }
 
     private updateLogBox(): void {
@@ -197,6 +198,7 @@ class LogViewer extends EventEmitter {
                     task.logs.push(data.toString())
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
+                        this.logBox.setScrollPerc(100) // Scroll to bottom for new logs
                     }
                 })
 
@@ -204,6 +206,7 @@ class LogViewer extends EventEmitter {
                     task.logs.push(pc.red(data.toString()))
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
+                        this.logBox.setScrollPerc(100) // Scroll to bottom for new logs
                     }
                 })
 
@@ -215,6 +218,7 @@ class LogViewer extends EventEmitter {
                     )
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
+                        this.logBox.setScrollPerc(100) // Scroll to bottom for exit message
                     }
 
                     // Update sidebar item status
