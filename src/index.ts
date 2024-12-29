@@ -158,10 +158,11 @@ class LogViewer extends EventEmitter {
     private startTasks(): void {
         this.tasks.forEach((task, index) => {
             if (task.isRunning) {
-                const p = spawn(task.command, {
+                // enable processes tty so colors are enabled
+                const p = spawn('script', ['-q', '/dev/null', task.command], {
                     shell: true,
                     env: { FORCE_COLOR: '1', ...process.env },
-                    stdio: ['inherit', 'pipe', 'pipe'],
+                    stdio: [process.stdin, 'pipe', 'pipe'],
                 })
                 task.process = p
 
