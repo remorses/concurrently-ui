@@ -121,6 +121,12 @@ class LogViewer extends EventEmitter {
             this.screen.render()
         })
 
+        // Handle terminal resize
+        this.screen.on('resize', () => {
+            this.logBox.width = this.screen.cols - left
+            this.updateLogBox()
+        })
+
         // Initial render
         this.updateLogBox()
         this.screen.render()
