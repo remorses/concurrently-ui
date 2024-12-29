@@ -1,5 +1,11 @@
 # concurrently-ui
 
+## 1.1.0
+
+### Minor Changes
+
+- ccb6572: Better colors support, enable selection with s
+
 ## 1.0.2
 
 ### Patch Changes
