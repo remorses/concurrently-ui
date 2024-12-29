@@ -14,12 +14,15 @@ importers:
       cac:
         specifier: ^6.7.14
         version: 6.7.14
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
     devDependencies:
       '@types/blessed':
         specifier: ^0.1.25
         version: 0.1.25
       '@types/node':
-        specifier: ^20.11.24
+        specifier: ^20.14.10
         version: 20.14.10
       typescript:
         specifier: ^5.3.3
@@ -42,6 +45,9 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
   typescript@5.5.3:
     resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
     engines: {node: '>=14.17'}
@@ -63,6 +69,8 @@ snapshots:
   blessed@0.1.81: {}
 
   cac@6.7.14: {}
+
+  picocolors@1.1.1: {}
 
   typescript@5.5.3: {}
 

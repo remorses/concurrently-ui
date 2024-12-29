@@ -3,6 +3,7 @@ import { cac } from 'cac'
 import blessed from 'blessed'
 import { spawn } from 'child_process'
 import { EventEmitter } from 'events'
+import pc from 'picocolors'
 
 interface Task {
     id: string
@@ -11,6 +12,7 @@ interface Task {
     isRunning: boolean
     logs: string[]
     process?: ReturnType<typeof spawn>
+    exitCode?: number
 }
 
 interface LogViewerOptions {
@@ -26,6 +28,7 @@ class LogViewer extends EventEmitter {
     private tasks: Task[]
     private currentTaskIndex: number = 0
     private options: LogViewerOptions
+    private spinnerIntervals: NodeJS.Timeout[] = []
 
     constructor(options: LogViewerOptions) {
         super()
@@ -47,10 +50,10 @@ class LogViewer extends EventEmitter {
             smartCSR: true,
             title: 'Task Logs',
         })
-
+        const left = 20
         // Create sidebar
         this.sidebar = blessed.list({
-            width: '20%',
+            width: left,
             height: '100%',
             left: 0,
             top: 0,
@@ -59,16 +62,13 @@ class LogViewer extends EventEmitter {
             },
             keys: true,
             vi: true,
-            items: this.tasks.map(
-                (task) => `${task.isRunning ? '⟳' : ' '} ${task.title}`,
-            ),
+            items: this.tasks.map((task) => this.getTaskLabel(task)),
         })
 
-        // Create log box
         this.logBox = blessed.scrollablebox({
-            width: '79%',
+            width: this.screen.cols - left,
             height: '100%',
-            left: '21%',
+            left: left,
             top: 0,
             scrollable: true,
             alwaysScroll: true,
@@ -92,7 +92,10 @@ class LogViewer extends EventEmitter {
 
         // Handle events
         this.sidebar.on('select', this.handleTaskSelect.bind(this))
-        this.screen.key(['q', 'C-c'], () => process.exit(0))
+        this.screen.key(['q', 'C-c'], () => {
+            this.cleanup()
+            process.exit(0)
+        })
 
         // Handle arrow keys
         this.screen.key(['up'], () => {
@@ -123,6 +126,16 @@ class LogViewer extends EventEmitter {
         this.screen.render()
     }
 
+    private getTaskLabel(task: Task): string {
+        if (task.isRunning) {
+            return `⟳ ${task.title}`
+        }
+        if (task.exitCode === 0) {
+            return `${pc.green('✓')} ${task.title}`
+        }
+        return `✗ ${task.title}`
+    }
+
     private handleTaskSelect(
         item: blessed.Widgets.ListElement,
         index: number,
@@ -137,34 +150,49 @@ class LogViewer extends EventEmitter {
         this.screen.render()
     }
 
+    private cleanup(): void {
+        this.spinnerIntervals.forEach((interval) => clearInterval(interval))
+        this.killAllTasks()
+    }
+
     private startTasks(): void {
         this.tasks.forEach((task, index) => {
             if (task.isRunning) {
-                const process = spawn('sh', ['-c', task.command])
-                task.process = process
+                const p = spawn(task.command, {
+                    shell: true,
+                    env: { FORCE_COLOR: '1', ...process.env },
+                    stdio: ['inherit', 'pipe', 'pipe'],
+                })
+                task.process = p
 
-                process.stdout.on('data', (data) => {
+                p.stdout.on('data', (data) => {
                     task.logs.push(data.toString())
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
                     }
                 })
 
-                process.stderr.on('data', (data) => {
-                    task.logs.push(`{red-fg}${data.toString()}{/red-fg}`)
+                p.stderr.on('data', (data) => {
+                    task.logs.push(pc.red(data.toString()))
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
                     }
                 })
 
-                process.on('exit', (code) => {
+                p.on('exit', (code) => {
                     task.isRunning = false
+                    task.exitCode = code
                     task.logs.push(
-                        `\n{yellow-fg}Process exited with code ${code}{/yellow-fg}`,
+                        `\n${pc.yellow(`Process exited with code ${code}`)}`,
                     )
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
                     }
+
+                    // Update sidebar item status
+                    const item = this.sidebar.getItem(index)
+                    item.content = this.getTaskLabel(task)
+                    this.screen.render()
 
                     if (
                         (this.options.killOthers && code === 0) ||
@@ -189,7 +217,7 @@ class LogViewer extends EventEmitter {
                 ]
                 let spinnerIndex = 0
 
-                setInterval(() => {
+                const interval = setInterval(() => {
                     if (task.isRunning) {
                         const item = this.sidebar.getItem(index)
                         item.content = `${spinnerFrames[spinnerIndex]} ${task.title}`
@@ -197,6 +225,7 @@ class LogViewer extends EventEmitter {
                         spinnerIndex = (spinnerIndex + 1) % spinnerFrames.length
                     }
                 }, 80)
+                this.spinnerIntervals.push(interval)
             }
         })
     }
