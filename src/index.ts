@@ -186,6 +186,8 @@ class LogViewer extends EventEmitter {
                     name: 'xterm-color',
                     cols: Number(this.logBox.width),
                     rows: Number(this.screen.rows),
+                    conptyInheritCursor: true,
+                    handleFlowControl: true,
                     env: { FORCE_COLOR: '1', ...process.env },
                 })
 
