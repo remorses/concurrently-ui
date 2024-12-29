@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@lydell/node-pty':
+        specifier: ^1.0.3
+        version: 1.0.3
       blessed:
         specifier: ^0.1.81
         version: 0.1.81
@@ -94,6 +97,34 @@ packages:
 
   '@changesets/write@0.3.2':
     resolution: {integrity: sha512-kDxDrPNpUgsjDbWBvUo27PzKX4gqeKOlhibaOXDJA6kuBisGqNHv/HwGJrAu8U/dSf8ZEFIeHIPtvSlZI1kULw==}
+
+  '@lydell/node-pty-darwin-arm64@1.0.3':
+    resolution: {integrity: sha512-cpLatXzGHds9fU6KSA+5jB4CRKqqK1ITerYlbucyhfsE0uksMVpzD6Ti6jMeEq7YM0N+c61q6EURl/pIwNYSqA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@lydell/node-pty-darwin-x64@1.0.3':
+    resolution: {integrity: sha512-IuEf8TXwo+wzoUEhqv+LtznwW94gMm4V9XVFMisFh+oRz0TNtnWHtgTCdWCVn4Dm3dpEDAjiAlTLx0ayC5uMVA==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@lydell/node-pty-linux-x64@1.0.3':
+    resolution: {integrity: sha512-tfj6Zg9F5KkyCQQ2wCUXUW/1lcNgdWAVJNtt6gQH3X+fUueSrRl+R7xoWTcl5NGcfn2l7QWgUrjZcVKP3/ljTg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@lydell/node-pty-win32-arm64@1.0.3':
+    resolution: {integrity: sha512-5MTd7hbrvmO/de/B2MDhxjh3E109i5bSds6JtIcVR1M6+uCvWJrON5ibbvWIAqTHpFup20IyDv0cQJxVv9o9nA==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@lydell/node-pty-win32-x64@1.0.3':
+    resolution: {integrity: sha512-XMANgXpBYGtKa5q+czro+TaJAyv3njbT7R81Pky+p7e4GwNdWtSUNBxtQm+O4ZLV0VJ1rNiMEHMyGOq8T9i4FA==}
+    cpu: [x64]
+    os: [win32]
+
+  '@lydell/node-pty@1.0.3':
+    resolution: {integrity: sha512-nLTNwJXEPi1oMyzxRwqsLB4jCmhDrltQS/kAYhV05qbPo5NOIKpw2tb+Iok/yhd9zP9+E5Lu7sWDGD+G4fdKbQ==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -582,6 +613,29 @@ snapshots:
       fs-extra: 7.0.1
       human-id: 1.0.2
       prettier: 2.8.8
+
+  '@lydell/node-pty-darwin-arm64@1.0.3':
+    optional: true
+
+  '@lydell/node-pty-darwin-x64@1.0.3':
+    optional: true
+
+  '@lydell/node-pty-linux-x64@1.0.3':
+    optional: true
+
+  '@lydell/node-pty-win32-arm64@1.0.3':
+    optional: true
+
+  '@lydell/node-pty-win32-x64@1.0.3':
+    optional: true
+
+  '@lydell/node-pty@1.0.3':
+    optionalDependencies:
+      '@lydell/node-pty-darwin-arm64': 1.0.3
+      '@lydell/node-pty-darwin-x64': 1.0.3
+      '@lydell/node-pty-linux-x64': 1.0.3
+      '@lydell/node-pty-win32-arm64': 1.0.3
+      '@lydell/node-pty-win32-x64': 1.0.3
 
   '@manypkg/find-root@1.1.0':
     dependencies:
