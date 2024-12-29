@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { cac } from 'cac'
 import blessed from 'blessed'
-import * as pty from '@lydell/node-pty'
+import { spawn } from 'child_process'
 import { EventEmitter } from 'events'
 import pc from 'picocolors'
 
@@ -11,7 +11,7 @@ interface Task {
     command: string
     isRunning: boolean
     logs: string[]
-    process?: pty.IPty
+    process?: ReturnType<typeof spawn>
     exitCode?: number
 }
 
@@ -180,32 +180,38 @@ class LogViewer extends EventEmitter {
     private startTasks(): void {
         this.tasks.forEach((task, index) => {
             if (task.isRunning) {
-                const shell =
-                    process.platform === 'win32' ? 'powershell.exe' : 'bash'
-                const p = pty.spawn(shell, [], {
-                    name: 'xterm-color',
-                    cols: Number(this.logBox.width),
-                    rows: Number(this.screen.rows),
-                    conptyInheritCursor: true,
-                    handleFlowControl: true,
-                    env: { FORCE_COLOR: '1', ...process.env },
+                // enable processes tty so colors are enabled
+                const p = spawn(task.command, {
+                    shell: true,
+                    env: {
+                        // CLICOLOR: '1',
+                        CLICOLOR_FORCE: '1',
+                        FORCE_COLOR: '1',
+                        ...process.env,
+                    },
+                    stdio: ['pipe', 'pipe', 'pipe'],
                 })
-
                 task.process = p
-                p.write(task.command + '\r')
 
-                p.onData((data) => {
-                    task.logs.push(data)
+                p.stdout.on('data', (data) => {
+                    task.logs.push(data.toString())
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
                     }
                 })
 
-                p.onExit(({ exitCode }) => {
+                p.stderr.on('data', (data) => {
+                    task.logs.push(pc.red(data.toString()))
+                    if (this.currentTaskIndex === index) {
+                        this.updateLogBox()
+                    }
+                })
+
+                p.on('exit', (code) => {
                     task.isRunning = false
-                    task.exitCode = exitCode
+                    task.exitCode = code
                     task.logs.push(
-                        `\n${pc.yellow(`Process exited with code ${exitCode}`)}`,
+                        `\n${pc.yellow(`Process exited with code ${code}`)}`,
                     )
                     if (this.currentTaskIndex === index) {
                         this.updateLogBox()
@@ -217,8 +223,8 @@ class LogViewer extends EventEmitter {
                     this.screen.render()
 
                     if (
-                        (this.options.killOthers && exitCode === 0) ||
-                        (this.options.killOthersOnFail && exitCode !== 0)
+                        (this.options.killOthers && code === 0) ||
+                        (this.options.killOthersOnFail && code !== 0)
                     ) {
                         this.killAllTasks()
                     }
