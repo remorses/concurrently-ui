@@ -1,6 +1,6 @@
 {
     "name": "concurrently-ui",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Run multiple commands concurrently with a terminal UI",
     "type": "module",
     "main": "dist/index.js",
@@ -23,6 +23,7 @@
         "picocolors": "^1.1.1"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.27.11",
         "@types/blessed": "^0.1.25",
         "@types/node": "^20.14.10",
         "typescript": "^5.3.3"
