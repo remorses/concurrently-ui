@@ -4,6 +4,9 @@
     "description": "Run multiple commands concurrently with a terminal UI",
     "type": "module",
     "main": "dist/index.js",
+    "repository": {
+        "url": "https://github.com/remorses/concurrently-ui"
+    },
     "bin": {
         "concurrently-ui": "./dist/index.js"
     },
